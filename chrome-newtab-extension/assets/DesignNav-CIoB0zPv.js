@@ -1,0 +1,1 @@
+import{N as e}from"./NavView-DPE7XrJ8.js";import{o,e as r}from"./index-BP6V6OzC.js";import"./NavCard-D0xup-l4.js";const _={__name:"DesignNav",setup(a){return(t,s)=>(o(),r(e,{category:"design"}))}};export{_ as default};

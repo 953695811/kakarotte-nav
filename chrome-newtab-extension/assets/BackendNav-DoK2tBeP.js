@@ -1,0 +1,1 @@
+import{N as e}from"./NavView-DPE7XrJ8.js";import{o as a,e as o}from"./index-BP6V6OzC.js";import"./NavCard-D0xup-l4.js";const _={__name:"BackendNav",setup(r){return(t,c)=>(a(),o(e,{category:"backend"}))}};export{_ as default};

@@ -1,0 +1,1 @@
+import{N as e}from"./NavView-DPE7XrJ8.js";import{o,e as r}from"./index-BP6V6OzC.js";import"./NavCard-D0xup-l4.js";const _={__name:"FrontendNav",setup(t){return(a,n)=>(o(),r(e,{category:"frontend"}))}};export{_ as default};
