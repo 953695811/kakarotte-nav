@@ -1,10 +1,10 @@
 <template>
   <div class="nav-card__icon">
     <img v-if="isUrlIcon" :src="highResIcon" :alt="item.name" @error="onIconError" />
-    <el-icon v-else-if="item.icon" class="nav-card__icon-svg">
-      <component :is="item.icon" />
-    </el-icon>
-    <span v-else class="nav-card__init">{{ (item.name || '?').slice(0,1) }}</span>
+    <!-- 安全文本图标（单字母或短 ASCII / emoji） -->
+    <!-- 禁用 <component :is="item.icon">：icon 为 emoji unicode 时 Vue prod resolveComponent 静默崩溃中止 v-for -->
+    <span v-else-if="item.icon" class="nav-card__text-icon">{{ iconText }}</span>
+    <span v-else class="nav-card__init">{{ firstChar }}</span>
   </div>
   <div class="nav-card__info">
     <div class="nav-card__name">{{ item.name }}</div>
@@ -28,23 +28,36 @@ const isUrlIcon = computed(() => {
   return icon.startsWith('http') || icon.startsWith('/') || icon.startsWith('data:')
 })
 
+// 非 URL 图标：显示为纯文本（emoji / 缩写），安全不抛错
+const iconText = computed(() => {
+  const s = props.item?.icon
+  if (!s) return ''
+  // emoji 或 1-3 字符短文本直接显示
+  return s
+})
+
+const firstChar = computed(() => {
+  return (props.item?.name || '?').slice(0, 1)
+})
+
 const highResIcon = computed(() => {
   const icon = props.item?.icon
-  if (!icon || !isUrlIcon.value) return icon
-  // Skip if already an SVG or high-res logo
-  if (icon.includes('.svg') || icon.includes('logo') || icon.includes('iconfont')) return icon
-  // Try to extract domain from item.url or icon
-  let domain = ''
-  try {
-    const urlStr = props.item?.url || icon
-    const url = new URL(urlStr.startsWith('http') ? urlStr : 'https://' + urlStr)
-    domain = url.hostname
-  } catch {
-    return icon
+  if (!icon) return ''
+  if (isUrlIcon.value) {
+    // 已经是可用图片 URL（favicon CDN / SVG CDN / 带扩展名的图片）→ 直接用，不再二次包装
+    const readyPicRe = /(favicon\.cccyun\.cc|code\.bdstatic\.com\/favicon|favicon\.bytedance\.com|cdn\.simpleicons\.org|www\.google\.com\/s2\/favicons|s2\.googleusercontent\.com|\.(?:svg|png|jpe?g|webp|gif|ico)(?:\?|$))/i
+    if (readyPicRe.test(icon)) return icon
+    // 否则认为 icon 存的是网站首页 URL → 提取域名走 favicon.cccyun.cc
+    let domain = ''
+    try {
+      const urlStr = icon.startsWith('http') ? icon : 'https://' + icon
+      domain = new URL(urlStr).hostname
+    } catch (e) {
+      return icon
+    }
+    return domain ? 'https://favicon.cccyun.cc/' + domain : icon
   }
-  if (!domain) return icon
-  // Use 360 favicon service (国内) for high-res icons
-  return 'https://favicon.cccyun.cc/' + domain
+  return icon
 })
 
 const onIconError = (e) => {
@@ -73,7 +86,7 @@ const onIconError = (e) => {
   if (!parent.querySelector('.nav-card__init')) {
     const span = document.createElement('span')
     span.className = 'nav-card__init'
-    span.textContent = (props.item?.name || '?').slice(0, 1)
+    span.textContent = firstChar.value
     parent.appendChild(span)
   }
 }
@@ -95,13 +108,13 @@ const onIconError = (e) => {
 .nav-card__icon img {
   width: 100%; height: 100%; object-fit: contain; background: var(--icon-bg-img);
 }
-.nav-card__icon-svg {
-  width: calc(var(--card-min, 280px) * 0.075);
-  height: calc(var(--card-min, 280px) * 0.075);
+.nav-card__text-icon {
+  font-size: calc(var(--card-min, 280px) * 0.075);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.5px;
   color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  user-select: none;
 }
 .nav-card__icon--fallback { background: var(--bg-card-hover); }
 .nav-card__init {

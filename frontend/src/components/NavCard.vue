@@ -15,7 +15,7 @@
       </el-tooltip>
       <el-tooltip content="编辑">
         <el-button link type="primary" size="small" class="nav-card__btn" @click="$emit('edit', item)">
-          <el-icon><Edit /></el-icon>
+          <el-icon><EditPen /></el-icon>
         </el-button>
       </el-tooltip>
       <el-tooltip content="删除">
@@ -24,17 +24,11 @@
         </el-button>
       </el-tooltip>
     </div>
-
-    <a v-if="editable" :href="item.url" target="_blank" rel="noopener" class="nav-card__open" @click.stop>
-      <el-tooltip content="打开链接">
-        <el-icon><TopRight /></el-icon>
-      </el-tooltip>
-    </a>
   </div>
 </template>
 
 <script setup>
-import { Edit, Delete, Rank, TopRight } from '@element-plus/icons-vue'
+import { EditPen, Delete, Rank } from '@element-plus/icons-vue'
 import CardContent from './CardContent.vue'
 
 defineProps({
@@ -90,17 +84,4 @@ defineEmits(['edit', 'delete'])
   border-radius: 6px;
 }
 .drag-handle:hover { background: var(--bg-card-hover); color: var(--accent); }
-
-.nav-card__open {
-  position: absolute;
-  top: 6px; right: 6px;
-  width: 24px; height: 24px;
-  display: none;
-  align-items: center; justify-content: center;
-  color: var(--text-secondary);
-  border-radius: 6px;
-  text-decoration: none;
-}
-.nav-card.is-editable:hover .nav-card__open { display: inline-flex; background: var(--bg-card); color: var(--accent); }
-.nav-card__open:hover { background: var(--bg-card-hover); }
 </style>
