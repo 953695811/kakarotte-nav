@@ -2,8 +2,8 @@
   <div class="layout" @contextmenu="bgMenuOpen">
     <aside class="sidebar">
       <div class="sidebar__logo">
-        <el-icon size="22" color="var(--accent)"><Link /></el-icon>
-        <span class="sidebar__title">网址导航</span>
+        <img :src="logoMark" alt="goGoAnywhere" class="sidebar__logo-img" />
+        <span class="sidebar__title">goGoAnywhere</span>
       </div>
       <el-scrollbar class="sidebar__scroll">
         <el-menu :default-active="activeMenu" class="sidebar__menu" @select="handleSelect">
@@ -166,11 +166,12 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, reactive, nextTick } 
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
-  Monitor, Brush, Cpu, Film, Headset, Search, Link, Collection,
+  Monitor, Brush, Cpu, Film, Headset, Search, Collection,
   CirclePlus, MoreFilled, Edit, Delete, Clock, FolderAdd, RefreshLeft,
   Moon, Sunny, Opportunity, Picture, Check, Refresh
 } from '@element-plus/icons-vue'
 import { getCategories } from './api'
+import logoMark from './assets/logo-mark.svg'
 import { saveSnapshot, getSnapshots, restoreSnapshot, deleteSnapshot, resetAll } from './utils/snapshot.js'
 
 const route = useRoute()
@@ -185,6 +186,7 @@ const iconMap = { Monitor, Brush, Cpu, Film, Headset, Opportunity }
 // ---------- 背景图 / 纯色（可随机切换 / 右键菜单） ----------
 const LS_BG = 'kakarotte_bg'
 const LS_BG_MODE = 'kakarotte_bg_mode'
+const LS_BG_INIT = 'kakarotte_bg_init'
 const backgrounds = [
   { name: '雪山晨光', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80' },
   { name: '海岸日落', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80' },
@@ -199,6 +201,8 @@ const backgrounds = [
   { name: '樱花春日', url: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?w=1920&q=80' },
   { name: '海浪拍岸', url: 'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=1920&q=80' }
 ]
+// 默认背景：有山和天空的风景照（从未设置过、也从未清除过背景时默认展示）
+const DEFAULT_BG = backgrounds[0].url
 const solidBgColors = [
   { name: '雾霾蓝', color: '#a8c8e7' },
   { name: '薄荷绿', color: '#b5e8c9' },
@@ -213,8 +217,11 @@ const solidBgColors = [
   { name: '草地绿', color: '#a3d977' },
   { name: '霞光红', color: '#f08a8a' }
 ]
+const hasSavedBg = localStorage.getItem(LS_BG) !== null || localStorage.getItem(LS_BG_MODE) !== null
+const bgCleared = localStorage.getItem(LS_BG_INIT) === '1'
 const bgMode = ref(localStorage.getItem(LS_BG_MODE) || '')
-const currentBg = ref(localStorage.getItem(LS_BG) || '')
+// 首次使用（无记录）→ 默认展示山+天空风景；用户若曾清除过背景则不展示
+const currentBg = ref(hasSavedBg ? (localStorage.getItem(LS_BG) || '') : (bgCleared ? '' : DEFAULT_BG))
 const applyBackground = (val, mode) => {
   const layout = document.querySelector('.layout')
   if (!layout) return
@@ -246,6 +253,7 @@ const randomBackground = () => {
   bgMode.value = ''
   localStorage.setItem(LS_BG, pick.url)
   localStorage.setItem(LS_BG_MODE, '')
+  localStorage.setItem(LS_BG_INIT, '1')
   applyBackground(pick.url)
   ElMessage.success('背景：' + pick.name)
 }
@@ -254,6 +262,7 @@ const clearBackground = () => {
   bgMode.value = ''
   localStorage.removeItem(LS_BG)
   localStorage.removeItem(LS_BG_MODE)
+  localStorage.setItem(LS_BG_INIT, '1')
   applyBackground('')
 }
 const setSolidBg = (color) => {
@@ -261,6 +270,7 @@ const setSolidBg = (color) => {
   bgMode.value = 'solid'
   localStorage.setItem(LS_BG, color)
   localStorage.setItem(LS_BG_MODE, 'solid')
+  localStorage.setItem(LS_BG_INIT, '1')
   applyBackground(color, 'solid')
   bgMenuClose()
   ElMessage.success('纯色背景已应用')
@@ -325,7 +335,8 @@ const openBgMenuFromButton = (e) => {
 
 // ---------- 主题（白昼 / 暗黑） ----------
 const LS_THEME = 'kakarotte_theme'
-const isDark = ref(localStorage.getItem(LS_THEME) === 'dark')
+// 默认深色主题：未手动选择过主题时按深色展示（只有显式切到浅色才存 'light'）
+const isDark = ref(localStorage.getItem(LS_THEME) !== 'light')
 const applyTheme = () => {
   const root = document.documentElement
   if (isDark.value) {
@@ -633,7 +644,9 @@ const fetchCategories = async () => {
       .filter((c) => !hidden.includes(c.key))
       .map((c) => ({ ...c, name: renamed[c.key] || c.name }))
     const local = getLocalCategories()
-    categoryList.value = [...official, ...local]
+    const officialKeys = new Set(official.map((c) => c.key))
+    // getCategories()（静态模式）已把本地分类合并进返回值，这里只补接口里没有的本地分类，避免重复
+    categoryList.value = [...official, ...local.filter((c) => !officialKeys.has(c.key))]
   } catch (e) { console.error(e) }
 }
 
@@ -897,6 +910,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helv
 }
 .sidebar { width: 224px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 0; height: 100vh; transition: background-color 0.25s ease, border-color 0.25s ease; }
 .sidebar__logo { padding: 18px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-light); }
+.sidebar__logo-img { width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0; }
 .sidebar__title { font-size: 17px; font-weight: 700; color: var(--text-primary); }
 .sidebar__scroll { flex: 1; overflow: hidden; }
 .sidebar__menu { border-right: none; background-color: transparent !important; }

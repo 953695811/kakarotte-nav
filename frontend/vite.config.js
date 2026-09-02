@@ -9,7 +9,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src')
     }
   },
-  base: '/nav/',
+  base: '/kakarotte-nav/',
   server: {
     port: 5173,
     proxy: {

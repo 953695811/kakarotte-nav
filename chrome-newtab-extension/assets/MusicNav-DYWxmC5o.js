@@ -1,1 +1,0 @@
-import{N as e}from"./NavView-DPE7XrJ8.js";import{o,e as r}from"./index-BP6V6OzC.js";import"./NavCard-D0xup-l4.js";const _={__name:"MusicNav",setup(a){return(t,c)=>(o(),r(e,{category:"music"}))}};export{_ as default};

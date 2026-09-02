@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Kakarotte 网址导航",
+  "name": "goGoAnywhere 网址导航",
   "version": "1.0.0",
   "description": "简洁美观的网址导航新标签页，支持自定义分类、主题色、背景图等",
   "chrome_url_overrides": {
@@ -12,6 +12,6 @@
     "128": "icon128.png"
   },
   "action": {
-    "default_title": "Kakarotte 网址导航"
+    "default_title": "goGoAnywhere 网址导航"
   }
 }

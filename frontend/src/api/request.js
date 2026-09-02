@@ -86,9 +86,10 @@ function getDefaultNavigation(category) {
   // favicon CDN: https://favicon.cccyun.cc/{domain} 国内稳定无防盗链
   const F = (domain) => `https://favicon.cccyun.cc/${domain}`
   const defaults = {
-    // ==================== 热门导航 (33) —— 前 17 项按用户指定顺序，后面补充热门 ====================
+    // ==================== 热门导航 (18) —— 前 17 项按用户指定顺序，抖音后插入 DeepSeek ====================
     hot: [
       { nav_id: 'douyin', name: '抖音', url: 'https://www.douyin.com', description: '短视频平台', icon: F('douyin.com'), category: 'hot' },
+      { nav_id: 'deepseek', name: 'DeepSeek', url: 'https://www.deepseek.com', description: 'AI 对话助手', icon: F('deepseek.com'), category: 'hot' },
       { nav_id: 'bilibili', name: '哔哩哔哩', url: 'https://www.bilibili.com', description: '弹幕视频网站', icon: F('bilibili.com'), category: 'hot' },
       { nav_id: 'xiaohongshu', name: '小红书', url: 'https://www.xiaohongshu.com', description: '生活方式社区', icon: F('xiaohongshu.com'), category: 'hot' },
       { nav_id: 'qqmail', name: 'QQ邮箱', url: 'https://mail.qq.com', description: 'QQ 邮箱服务', icon: F('qq.com'), category: 'hot' },
@@ -105,23 +106,6 @@ function getDefaultNavigation(category) {
       { nav_id: 'speedtest', name: '测网速', url: 'https://www.speedtest.cn', description: '网络测速工具', icon: F('speedtest.cn'), category: 'hot' },
       { nav_id: 'runoob', name: '菜鸟教程', url: 'https://www.runoob.com', description: '编程学习教程', icon: F('runoob.com'), category: 'hot' },
       { nav_id: 'yuque', name: '语雀', url: 'https://www.yuque.com', description: '知识管理平台', icon: F('yuque.com'), category: 'hot' },
-      // —— 后面补充热门导航 ——
-      { nav_id: 'taobao', name: '淘宝', url: 'https://www.taobao.com', description: '电商购物平台', icon: F('taobao.com'), category: 'hot' },
-      { nav_id: 'jd', name: '京东', url: 'https://www.jd.com', description: '综合网购平台', icon: F('jd.com'), category: 'hot' },
-      { nav_id: 'tmall', name: '天猫', url: 'https://www.tmall.com', description: '品质综合购物', icon: F('tmall.com'), category: 'hot' },
-      { nav_id: 'pinduoduo', name: '拼多多', url: 'https://www.pinduoduo.com', description: '社交电商平台', icon: F('pinduoduo.com'), category: 'hot' },
-      { nav_id: 'zhihu', name: '知乎', url: 'https://www.zhihu.com', description: '问答社区', icon: F('zhihu.com'), category: 'hot' },
-      { nav_id: 'weibo', name: '微博', url: 'https://weibo.com', description: '社交平台', icon: F('weibo.com'), category: 'hot' },
-      { nav_id: 'weixin', name: '微信', url: 'https://weixin.qq.com', description: '即时通讯', icon: F('qq.com'), category: 'hot' },
-      { nav_id: 'alipay', name: '支付宝', url: 'https://www.alipay.com', description: '第三方支付', icon: F('alipay.com'), category: 'hot' },
-      { nav_id: 'meituan', name: '美团', url: 'https://www.meituan.com', description: '生活服务平台', icon: F('meituan.com'), category: 'hot' },
-      { nav_id: 'tencent-video', name: '腾讯视频', url: 'https://v.qq.com', description: '在线视频平台', icon: F('qq.com'), category: 'hot' },
-      { nav_id: 'ctrip', name: '携程', url: 'https://www.ctrip.com', description: '旅行预订平台', icon: F('ctrip.com'), category: 'hot' },
-      { nav_id: 'didi', name: '滴滴', url: 'https://www.didi.com', description: '出行打车平台', icon: F('didi.com'), category: 'hot' },
-      { nav_id: 'smzdm', name: '什么值得买', url: 'https://www.smzdm.com', description: '优惠比价推荐', icon: F('smzdm.com'), category: 'hot' },
-      { nav_id: 'douban', name: '豆瓣', url: 'https://www.douban.com', description: '读书/电影/音乐社区', icon: F('douban.com'), category: 'hot' },
-      { nav_id: 'juejin', name: '掘金', url: 'https://juejin.cn', description: '开发者技术社区', icon: F('juejin.cn'), category: 'hot' },
-      { nav_id: 'sogou', name: '搜狗', url: 'https://www.sogou.com', description: '综合搜索引擎', icon: F('sogou.com'), category: 'hot' }
     ],
     // ==================== 前端导航 (20) ====================
     frontend: [

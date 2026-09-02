@@ -372,7 +372,8 @@ console.log('[NavView] computed declared. showGrid initial =', showGrid.value, '
 const fetchCategories = async () => {
   try {
     const res = await getCategories()
-    categoryList.value = [...(res.data || []), ...getLocalCategories()]
+    const resKeys = new Set((res.data || []).map((c) => c.key))
+    categoryList.value = [...(res.data || []), ...getLocalCategories().filter((c) => !resKeys.has(c.key))]
   } catch (e) { console.error(e) }
 }
 
@@ -383,8 +384,10 @@ const fetchData = async (category) => {
   try {
     const res = await getNavigation(category)
     console.log('[NavView] getNavigation response:', res)
-    const official = (res.data || []).map((item) => ({ ...item, source: 'official' }))
     const local = getLocalNavItems().filter((i) => i.category === category).map((item) => ({ ...item, source: 'user' }))
+    // getNavigation()（静态模式）已把用户自定义卡片合并进返回值，这里按 nav_id 剔除重复，避免卡片重复并保证 source 标记正确
+    const localIds = new Set(local.map((i) => i.nav_id))
+    const official = (res.data || []).filter((item) => !localIds.has(item.nav_id)).map((item) => ({ ...item, source: 'official' }))
     // 读取"默认卡片删除黑名单"：用户删过的官方卡片不再出现在合并列表中
     const deletedMap = getDeletedDefaults()
     const deletedSet = new Set((deletedMap[category] || []).filter(Boolean))

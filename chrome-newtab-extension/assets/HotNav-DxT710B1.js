@@ -1,1 +1,0 @@
-import{N as o}from"./NavView-DPE7XrJ8.js";import{o as t,e}from"./index-BP6V6OzC.js";import"./NavCard-D0xup-l4.js";const m={__name:"HotNav",setup(r){return(a,c)=>(t(),e(o,{category:"hot"}))}};export{m as default};
